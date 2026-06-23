@@ -2,6 +2,7 @@ import { repo } from "@/lib/db";
 import { PageHeader } from "@/components/dashboard/page-header";
 import { Card, CardContent } from "@/components/ui/card";
 import { SettingsForm } from "./settings-form";
+import { SourcesManager } from "@/components/dashboard/sources-manager";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +50,10 @@ export default function AjustesPage() {
       </Card>
 
       <SettingsForm settings={settings} />
+
+      <div className="mt-5">
+        <SourcesManager />
+      </div>
     </>
   );
 }

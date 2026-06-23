@@ -66,3 +66,15 @@ export const NEWS_CATEGORY_COLORS: Record<NewsCategory, string> = {
   industry: "bg-pink-500/10 text-pink-400 border-pink-500/30",
   other: "bg-gray-500/10 text-gray-400 border-gray-500/30",
 };
+
+
+/** Fila de la tabla news_sources (settings del scraper de noticias). */
+export interface NewsSourceRow {
+  id: string;
+  name: string;
+  url: string;
+  tier: number;
+  default_category: NewsCategory;
+  enabled: number;
+  last_polled_at: string | null;
+}

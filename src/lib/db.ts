@@ -108,6 +108,16 @@ function migrate(d: Database.Database) {
       last_polled_at TEXT
     );
 
+    CREATE TABLE IF NOT EXISTS news_sources (
+      id TEXT PRIMARY KEY,
+      name TEXT NOT NULL,
+      url TEXT NOT NULL UNIQUE,
+      tier INTEGER NOT NULL DEFAULT 2,
+      default_category TEXT NOT NULL DEFAULT 'industry',
+      enabled INTEGER NOT NULL DEFAULT 1,
+      last_polled_at TEXT
+    );
+
     CREATE TABLE IF NOT EXISTS ideas (
       id TEXT PRIMARY KEY,
       source_id TEXT NOT NULL,
@@ -500,6 +510,36 @@ export const repo = {
     db()
       .prepare("UPDATE idea_sources SET last_polled_at = datetime('now') WHERE id = ?")
       .run(sourceId);
+  },
+  deleteIdeaSource(id: string): boolean {
+    return db().prepare("DELETE FROM idea_sources WHERE id = ?").run(id).changes > 0;
+  },
+
+  // ── News sources ──────────────────────────────────────────────────────
+  listNewsSources(onlyEnabled = false): import("./news/types").NewsSourceRow[] {
+    const sql = onlyEnabled
+      ? "SELECT * FROM news_sources WHERE enabled = 1 ORDER BY tier ASC, name ASC"
+      : "SELECT * FROM news_sources ORDER BY tier ASC, name ASC";
+    return db().prepare(sql).all() as import("./news/types").NewsSourceRow[];
+  },
+  upsertNewsSource(s: { id?: string; name: string; url: string; tier: number; default_category: string; enabled: number }): import("./news/types").NewsSourceRow {
+    const id = s.id ?? randomUUID();
+    db()
+      .prepare(
+        `INSERT INTO news_sources (id, name, url, tier, default_category, enabled)
+         VALUES (?, ?, ?, ?, ?, ?)
+         ON CONFLICT(url) DO UPDATE SET name = excluded.name, tier = excluded.tier, default_category = excluded.default_category, enabled = excluded.enabled`,
+      )
+      .run(id, s.name, s.url, s.tier, s.default_category, s.enabled);
+    return (db().prepare("SELECT * FROM news_sources WHERE url = ?").get(s.url) as import("./news/types").NewsSourceRow);
+  },
+  deleteNewsSource(id: string): boolean {
+    return db().prepare("DELETE FROM news_sources WHERE id = ?").run(id).changes > 0;
+  },
+  markNewsSourcePolled(id: string) {
+    db()
+      .prepare("UPDATE news_sources SET last_polled_at = datetime('now') WHERE id = ?")
+      .run(id);
   },
 
   listIdeas(opts: { includeDismissed?: boolean } = {}): Idea[] {

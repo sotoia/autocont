@@ -17,7 +17,7 @@
 import Parser from "rss-parser";
 import { repo } from "@/lib/db";
 import { translatePending } from "@/lib/translate";
-import { NEWS_SOURCES, NEWS_KEYWORDS, detectCategory, detectTags, detectImportance } from "./sources";
+import { NEWS_KEYWORDS, detectCategory, detectTags, detectImportance } from "./sources";
 
 const parser = new Parser({
   timeout: 15_000,
@@ -67,9 +67,13 @@ export async function pollNews(opts: { sinceHours?: number } = {}): Promise<News
     errors: [],
   };
 
+  // Fuentes desde DB (gestionadas en /ajustes). Si el usuario aún no añadió
+  // ninguna, el array está vacío y simplemente no se hace nada.
+  const sources = repo.listNewsSources(true);
+
   // Procesamos fuentes en paralelo (todas son RSS, sin tope de rate limit)
   await Promise.allSettled(
-    NEWS_SOURCES.map(async (src) => {
+    sources.map(async (src) => {
       try {
         const feed = await parser.parseURL(src.url);
         for (const it of feed.items ?? []) {
@@ -97,9 +101,9 @@ export async function pollNews(opts: { sinceHours?: number } = {}): Promise<News
             continue;
           }
 
-          const category = detectCategory(combined, src.defaultCategory);
+          const category = detectCategory(combined, src.default_category);
           const tags = detectTags(combined);
-          const importance = detectImportance(combined, src.tier);
+          const importance = detectImportance(combined, src.tier as 1 | 2 | 3);
 
           repo.createNews({
             title: title || "Sin título",
