@@ -66,6 +66,33 @@ docker compose up -d
 La app queda disponible en `http://localhost:3000`. La carpeta `data/`
 y `public/uploads/` se montan como volúmenes (persistencia).
 
+### Opción C — App de escritorio (Electron, doble click)
+
+Si prefieres una app nativa con icono en el dock/taskbar en vez de abrir
+el navegador, AUTOCONT trae un wrapper Electron opcional. La app sigue
+siendo la misma Next.js, pero envuelta en una ventana nativa propia.
+
+Empaqueta tú mismo el binario para tu sistema operativo:
+
+```bash
+git clone https://github.com/<tu-usuario>/autocont.git
+cd autocont
+npm install
+npm run electron:build:mac    # genera dist-electron/AUTOCONT-x.y.z.dmg
+# npm run electron:build:win   # .exe (Windows)
+# npm run electron:build:linux # .AppImage (Linux)
+```
+
+Después arrastra el `.dmg` a Aplicaciones (Mac) o ejecuta el `.exe` (Win)
+/ `.AppImage` (Linux). Los datos viven en la carpeta de usuario del SO
+(`~/Library/Application Support/AUTOCONT` en Mac, `%APPDATA%/AUTOCONT`
+en Windows).
+
+> ⚠️ Sin firmar con Apple Developer ID: en macOS el primer arranque puede
+> mostrar el aviso "AUTOCONT no se puede abrir porque no se puede verificar".
+> Solución: click derecho sobre la app → **Abrir** → confirmar. Solo la
+> primera vez.
+
 ---
 
 ## Configuración

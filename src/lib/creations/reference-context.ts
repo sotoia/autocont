@@ -27,7 +27,10 @@ let cached: ReferenceVideo[] | null = null;
 
 export function loadReferences(): ReferenceVideo[] {
   if (cached) return cached;
-  const file = path.resolve(process.cwd(), "data", "reference-transcripts", "consolidated.json");
+  const dataDir = process.env.AUTOCONT_DATA_DIR
+    ? path.resolve(process.env.AUTOCONT_DATA_DIR)
+    : path.resolve(process.cwd(), "data");
+  const file = path.join(dataDir, "reference-transcripts", "consolidated.json");
   if (!fs.existsSync(file)) {
     console.warn("[creations] referencias no encontradas en", file);
     cached = [];

@@ -40,6 +40,9 @@ yarn-error.log*
 *.tsbuildinfo
 next-env.d.ts
 
+# Electron — builds empaquetados (.dmg/.exe/.AppImage)
+dist-electron/
+
 # AUTOCONT — datos del usuario (NUNCA commitear).
 # Bloqueo TODO data/ y solo dejo pasar el .gitkeep / README para preservar la
 # carpeta vacía. La BD, transcripts, caché y modelos Whisper viven aquí.

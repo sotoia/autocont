@@ -6,7 +6,10 @@ import { repo } from "@/lib/db";
 
 // Horizontal strip of N frames for scrub-preview. Cached at data/sprites/<id>.jpg
 // so we only run ffmpeg once per asset.
-const SPRITE_ROOT = path.join(process.cwd(), "..", "data", "sprites");
+const DATA_DIR = process.env.AUTOCONT_DATA_DIR
+  ? path.resolve(process.env.AUTOCONT_DATA_DIR)
+  : path.resolve(process.cwd(), "data");
+const SPRITE_ROOT = path.join(DATA_DIR, "sprites");
 const FRAMES = 24;
 const FRAME_W = 240;
 const FRAME_H = 135;

@@ -14,7 +14,11 @@ import { IDEAS_SEED_SOURCES } from "./ideas/sources-seed";
 import type { Creation } from "./creations/types";
 import type { NewsItem, NewsCategory } from "./news/types";
 
-const DB_DIR = path.resolve(process.cwd(), "..", "data");
+// Carpeta de datos: por defecto `<cwd>/data`. Se puede sobreescribir con
+// AUTOCONT_DATA_DIR (lo usa el wrapper Electron para apuntar a app.getPath('userData')).
+const DB_DIR = process.env.AUTOCONT_DATA_DIR
+  ? path.resolve(process.env.AUTOCONT_DATA_DIR)
+  : path.resolve(process.cwd(), "data");
 const DB_PATH = path.join(DB_DIR, "app.db");
 
 if (!fs.existsSync(DB_DIR)) fs.mkdirSync(DB_DIR, { recursive: true });

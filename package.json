@@ -4,12 +4,42 @@
   "description": "Sistema operativo personal para tu pipeline de YouTube — desde la idea hasta el timeline de DaVinci Resolve, con IA orquestando el trabajo.",
   "license": "MIT",
   "private": false,
+  "main": "electron/main.cjs",
   "scripts": {
     "setup": "node -e \"const fs=require('fs');['data','public/uploads','public/stock'].forEach(d=>fs.mkdirSync(d,{recursive:true}));console.log('✓ AUTOCONT setup listo. Siguiente: npm run build && npm start')\"",
     "dev": "next dev",
     "build": "next build",
     "start": "npm run setup && next start",
+    "electron:dev": "npm run build && electron .",
+    "electron:build": "npm run build && electron-builder",
+    "electron:build:mac": "npm run build && electron-builder --mac",
+    "electron:build:win": "npm run build && electron-builder --win",
+    "electron:build:linux": "npm run build && electron-builder --linux",
     "lint": "eslint"
+  },
+  "build": {
+    "appId": "com.autocont.app",
+    "productName": "AUTOCONT",
+    "directories": { "output": "dist-electron" },
+    "files": [
+      "electron/**/*",
+      ".next/standalone/**/*",
+      ".next/static/**/*",
+      "public/**/*",
+      "package.json"
+    ],
+    "asarUnpack": [
+      ".next/standalone/**/*",
+      ".next/static/**/*",
+      "public/**/*"
+    ],
+    "extraResources": [
+      { "from": ".next/static", "to": "app.asar.unpacked/.next/static" },
+      { "from": "public",       "to": "app.asar.unpacked/public" }
+    ],
+    "mac": { "target": ["dmg"], "category": "public.app-category.video", "icon": "public/icon.png" },
+    "win": { "target": ["nsis"], "icon": "public/icon.png" },
+    "linux": { "target": ["AppImage"], "icon": "public/icon.png", "category": "Video" }
   },
   "dependencies": {
     "@anthropic-ai/sdk": "^0.90.0",
@@ -57,9 +87,12 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "babel-plugin-react-compiler": "1.0.0",
+    "electron": "^42.4.1",
+    "electron-builder": "^26.15.3",
     "eslint": "^9",
     "eslint-config-next": "^16.2.9",
     "tailwindcss": "^4",
-    "typescript": "^5"
+    "typescript": "^5",
+    "wait-on": "^9.0.10"
   }
 }
