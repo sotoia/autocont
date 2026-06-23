@@ -1,0 +1,26 @@
+# AUTOCONT v0.1 — docker compose
+#
+# Arranca:
+#   docker compose up -d
+# Logs:
+#   docker compose logs -f
+# Parar:
+#   docker compose down
+
+services:
+  autocont:
+    build: .
+    container_name: autocont
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      # Persistencia de la BD del usuario (creaciones, settings, etc)
+      - ./data:/app/data
+      # Persistencia de uploads (miniaturas, etc)
+      - ./public/uploads:/app/public/uploads
+      # Pool de stock local (vídeo/foto/música) — opcional
+      - ./public/stock:/app/public/stock
+    environment:
+      # Opcional: pre-set de la key via env (también se puede poner en UI)
+      - ANTHROPIC_API_KEY=${ANTHROPIC_API_KEY:-}

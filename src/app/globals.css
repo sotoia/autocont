@@ -1,0 +1,292 @@
+@import "tailwindcss";
+
+/* ────────────────────────────────────────────────────────────────────────
+ *  NOTHING DESIGN SYSTEM — AUTOCONT
+ *
+ *  Dual theme: dark (carbón) + light (blanco roto).
+ *  El oscuro NO es negro puro — el PrompterOverlay sí (hardcoded en su
+ *  propio componente con bg-black).
+ *
+ *  Tipografía:
+ *    --font-grotesk  → UI body (Space Grotesk)
+ *    --font-mono     → labels / datos (Space Mono)
+ *    --font-doto     → hero / brand (Doto, dot-matrix)
+ *
+ *  Color es un EVENTO (no decoración). Reserva:
+ *    --color-accent  → estados destructivos / urgentes / breaking
+ *    --color-success → confirmado / online / saved
+ *    --color-warning → atención
+ * ──────────────────────────────────────────────────────────────────────── */
+
+@theme {
+  /* Tailwind: registramos los tokens como CSS color tokens para que
+     `bg-bg`, `text-fg`, `border-border` etc. sigan funcionando. */
+  --color-bg: var(--nd-bg);
+  --color-bg-elevated: var(--nd-surface);
+  --color-bg-card: var(--nd-surface);
+  --color-bg-hover: var(--nd-surface-raised);
+  --color-border: var(--nd-border);
+  --color-border-strong: var(--nd-border-visible);
+  --color-fg: var(--nd-text-primary);
+  --color-fg-muted: var(--nd-text-secondary);
+  --color-fg-subtle: var(--nd-text-disabled);
+  --color-accent: var(--nd-accent);
+  --color-accent-hover: var(--nd-accent-hover);
+  --color-accent-fg: var(--nd-accent-fg);
+  --color-danger: var(--nd-accent);
+  --color-warn: var(--nd-warning);
+  --color-info: var(--nd-interactive);
+  --color-success: var(--nd-success);
+
+  --font-sans: var(--font-grotesk), "DM Sans", system-ui, sans-serif;
+  --font-mono: var(--font-mono), "JetBrains Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-doto: var(--font-doto), "Space Mono", monospace;
+
+  /* Radios — Nothing prefiere cuadrados/pill. Cards 12–16, técnicos 4–8 */
+  --radius-xs: 2px;
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+}
+
+/* ── DARK (default) — carbón oscuro, no negro puro ─────────────────── */
+:root,
+:root[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Backgrounds — graduados, todos sobre carbón */
+  --nd-bg:               #141414;    /* página */
+  --nd-surface:          #1A1A1A;    /* cards, sidebar */
+  --nd-surface-raised:   #242424;    /* hover, dropdowns */
+
+  /* Borders */
+  --nd-border:           #2A2A2A;    /* decorativos sutiles */
+  --nd-border-visible:   #3A3A3A;    /* intencionales, wireframe */
+
+  /* Texto — escala monocromática es la jerarquía */
+  --nd-text-disabled:    #666666;
+  --nd-text-secondary:   #999999;
+  --nd-text-primary:     #E8E8E8;
+  --nd-text-display:     #FFFFFF;
+
+  /* Accent — rojo Nothing. UNO POR PANTALLA. Para destructivos / urgentes. */
+  --nd-accent:           #D71921;
+  --nd-accent-hover:     #B81219;
+  --nd-accent-fg:        #FFFFFF;
+  --nd-accent-subtle:    rgba(215, 25, 33, 0.12);
+
+  /* Status — color SOLO sobre el VALOR, nunca sobre fondo de fila */
+  --nd-success:          #4A9E5C;
+  --nd-warning:          #D4A843;
+  --nd-interactive:      #5B9BF6;
+
+  /* Dot-matrix decorativo */
+  --nd-dot:              rgba(255, 255, 255, 0.04);
+}
+
+/* ── LIGHT — blanco roto técnico tipo manual impreso ───────────────── */
+:root[data-theme="light"] {
+  color-scheme: light;
+
+  --nd-bg:               #F5F5F5;
+  --nd-surface:          #FFFFFF;
+  --nd-surface-raised:   #F0F0F0;
+
+  --nd-border:           #E8E8E8;
+  --nd-border-visible:   #CCCCCC;
+
+  --nd-text-disabled:    #B0B0B0;
+  --nd-text-secondary:   #6B6B6B;
+  --nd-text-primary:     #1A1A1A;
+  --nd-text-display:     #000000;
+
+  --nd-accent:           #D71921;
+  --nd-accent-hover:     #B81219;
+  --nd-accent-fg:        #FFFFFF;
+  --nd-accent-subtle:    rgba(215, 25, 33, 0.08);
+
+  --nd-success:          #357A45;
+  --nd-warning:          #B07F0C;
+  --nd-interactive:      #007AFF;
+
+  --nd-dot:              rgba(0, 0, 0, 0.06);
+}
+
+/* Reset borde por defecto sobre todos los elementos */
+* {
+  border-color: var(--nd-border);
+}
+
+html,
+body {
+  background: var(--nd-bg);
+  color: var(--nd-text-primary);
+  font-family: var(--font-grotesk), "DM Sans", system-ui, sans-serif;
+  font-feature-settings: "ss01", "ss02", "cv11";
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* Selección — el accent (rojo Nothing) sutil */
+::selection {
+  background: var(--nd-accent);
+  color: var(--nd-accent-fg);
+}
+
+/* ── Utility classes Nothing ────────────────────────────────────────── */
+
+/* Labels Space Mono ALL CAPS, "panel de instrumentos" */
+.nd-label {
+  font-family: var(--font-mono), monospace;
+  font-size: 11px;
+  font-weight: 400;
+  line-height: 1.2;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--nd-text-secondary);
+}
+
+.nd-caption {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  line-height: 1.4;
+  letter-spacing: 0.04em;
+  color: var(--nd-text-secondary);
+}
+
+/* Hero number — Space Mono grande para datos */
+.nd-display {
+  font-family: var(--font-mono), monospace;
+  font-size: 48px;
+  font-weight: 400;
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  color: var(--nd-text-display);
+}
+
+/* Doto dot-matrix — solo para hero / brand */
+.nd-doto {
+  font-family: var(--font-doto), monospace;
+  font-weight: 500;
+  letter-spacing: -0.01em;
+}
+
+/* Dot-grid decorativo de fondo (16px grid) */
+.bg-grid,
+.nd-dot-grid {
+  background-image: radial-gradient(circle, var(--nd-dot) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* Checkerboard pattern para previews con fondo transparente */
+.bg-checkerboard {
+  background-image:
+    linear-gradient(45deg, rgba(255,255,255,0.06) 25%, transparent 25%),
+    linear-gradient(-45deg, rgba(255,255,255,0.06) 25%, transparent 25%),
+    linear-gradient(45deg, transparent 75%, rgba(255,255,255,0.06) 75%),
+    linear-gradient(-45deg, transparent 75%, rgba(255,255,255,0.06) 75%);
+  background-size: 20px 20px;
+  background-position: 0 0, 0 10px, 10px -10px, -10px 0;
+  background-color: var(--nd-surface-raised);
+}
+.nd-dot-grid-subtle {
+  background-image: radial-gradient(circle, var(--nd-dot) 0.5px, transparent 0.5px);
+  background-size: 12px 12px;
+}
+
+/* Scrollbars — finas, sin color */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: var(--nd-border-visible);
+  border-radius: 0;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--nd-text-disabled);
+}
+
+/* Inputs heredan tipografía */
+input,
+textarea,
+select,
+button {
+  font-family: inherit;
+}
+
+/* Focus visible — outline accent, sin sombras */
+:focus-visible {
+  outline: 1.5px solid var(--nd-accent);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+@keyframes pulse-dot {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.4; transform: scale(0.85); }
+}
+
+.pulse-dot {
+  animation: pulse-dot 1.4s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.shimmer {
+  background: linear-gradient(90deg, transparent, var(--nd-surface-raised), transparent);
+  background-size: 200% 100%;
+  animation: shimmer 2s infinite;
+}
+
+/* Bloque "instrumental" para datos — usado en widgets */
+.nd-instrument {
+  border: 1px solid var(--nd-border-visible);
+  background: var(--nd-surface);
+  border-radius: 8px;
+}
+
+/* Botón Nothing primario (pill, invertido) */
+.nd-btn {
+  font-family: var(--font-mono), monospace;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  padding: 10px 20px;
+  border-radius: 999px;
+  transition: opacity 200ms cubic-bezier(0.25, 0.1, 0.25, 1),
+              background-color 200ms cubic-bezier(0.25, 0.1, 0.25, 1),
+              border-color 200ms cubic-bezier(0.25, 0.1, 0.25, 1);
+}
+.nd-btn-primary {
+  background: var(--nd-text-display);
+  color: var(--nd-bg);
+  border: 0;
+}
+.nd-btn-primary:hover {
+  opacity: 0.85;
+}
+.nd-btn-secondary {
+  background: transparent;
+  color: var(--nd-text-primary);
+  border: 1px solid var(--nd-border-visible);
+}
+.nd-btn-secondary:hover {
+  border-color: var(--nd-text-primary);
+}
+.nd-btn-destructive {
+  background: transparent;
+  color: var(--nd-accent);
+  border: 1px solid var(--nd-accent);
+}
+.nd-btn-destructive:hover {
+  background: var(--nd-accent-subtle);
+}
